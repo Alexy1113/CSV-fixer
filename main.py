@@ -10,12 +10,12 @@ DELIMITER_CANDIDATES = [",", ";", "\t", "|"]
 REVIEW_LABEL = "⚠️ NEEDS REVIEW"
 
 # ANSI colors work in modern Windows Terminal and PowerShell.
-COLOR_CYAN = "\\033[96m"
-COLOR_GREEN = "\\033[92m"
-COLOR_YELLOW = "\\033[93m"
-COLOR_RED = "\\033[91m"
-COLOR_MAGENTA = "\\033[95m"
-COLOR_RESET = "\\033[0m"
+COLOR_CYAN = "\033[96m"
+COLOR_GREEN = "\033[92m"
+COLOR_YELLOW = "\033[93m"
+COLOR_RED = "\033[91m"
+COLOR_MAGENTA = "\033[95m"
+COLOR_RESET = "\033[0m"
 
 
 def step(number, message, color=COLOR_CYAN):
