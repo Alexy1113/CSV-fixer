@@ -119,6 +119,18 @@ def suggest_email_repair(value):
     # Remove whitespace immediately around dots, then try a specific known repair.
     candidate = re.sub(r"\s*\.\s*", ".", original)
 
+    # Fix a duplicated @ symbol, but only when the rest of the address is valid.
+    if candidate.count("@") == 2 and "@@" in candidate:
+        candidate = candidate.replace("@@", "@", 1)
+
+    # Fix consecutive dots in the domain only.
+    if candidate.count("@") == 1:
+        local, domain = candidate.split("@", 1)
+        if ".." in domain:
+            domain = re.sub(r"\.{2,}", ".", domain)
+            candidate = f"{local}@{domain}"
+
+
     # Recognize 'at_' used instead of '@'. Do not replace arbitrary 'at' text.
     if "@" not in candidate:
         match = re.fullmatch(
