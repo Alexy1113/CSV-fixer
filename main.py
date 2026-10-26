@@ -9,6 +9,19 @@ import pandas as pd
 DELIMITER_CANDIDATES = [",", ";", "\t", "|"]
 REVIEW_LABEL = "⚠️ NEEDS REVIEW"
 
+# ANSI colors work in modern Windows Terminal and PowerShell.
+COLOR_CYAN = "\\033[96m"
+COLOR_GREEN = "\\033[92m"
+COLOR_YELLOW = "\\033[93m"
+COLOR_RED = "\\033[91m"
+COLOR_MAGENTA = "\\033[95m"
+COLOR_RESET = "\\033[0m"
+
+
+def step(number, message, color=COLOR_CYAN):
+    """Print a colored step number and a readable status message."""
+    print(f"{color}[{number}/5]{COLOR_RESET} {message}")
+
 
 def detect_encoding(file_path):
     """Detect a likely text encoding, with safe fallbacks."""
@@ -117,13 +130,13 @@ def suggest_email_repair(value):
 
 def repair_csv(input_path, output_path, current_delimiter=None):
     """Clean a CSV and mark suspicious email rows in an added review column."""
-    print(f"\nLaunching data cleaning pipeline for: {input_path}")
+    print(f"\n🚀 Launching data cleaning pipeline for: {input_path}")
 
     encoding = detect_encoding(input_path)
-    print(f"[1/5] Detected encoding: {encoding}")
+    step(1, f"🔎 Detected encoding: {encoding}", COLOR_CYAN)
 
     delimiter = current_delimiter or detect_delimiter(input_path, encoding)
-    print(f"[2/5] Using delimiter: {repr(delimiter)}")
+    step(2, f"🧩 Using delimiter: {repr(delimiter)}", COLOR_CYAN)
 
     try:
         df = pd.read_csv(
@@ -136,19 +149,19 @@ def repair_csv(input_path, output_path, current_delimiter=None):
             skipinitialspace=False,
         )
     except (OSError, UnicodeError, pd.errors.ParserError, ValueError) as exc:
-        print(f"Failed to read CSV: {exc}")
+        print(f"❌ Failed to read CSV: {exc}")
         return False
 
-    print(f"File parsed successfully into {len(df.columns)} columns.")
+    print(f"📄 File parsed successfully into {len(df.columns)} columns.")
     original_rows = len(df)
 
     for col in df.columns:
         df[col] = df[col].map(lambda value: value.strip() if isinstance(value, str) else value)
 
     df = df.drop_duplicates()
-    print(f"[3/5] Removed {original_rows - len(df)} duplicate rows.")
+    step(3, f"🧹 Removed {original_rows - len(df)} duplicate rows.", COLOR_YELLOW)
 
-    print("[4/5] Cleaning identifier-like columns and checking email format.")
+    step(4, "🛠️ Cleaning identifier-like columns and checking email format.", COLOR_MAGENTA)
     repaired_email_count = 0
     review_count = 0
     email_columns = [
@@ -210,12 +223,13 @@ def repair_csv(input_path, output_path, current_delimiter=None):
         print(f"Failed to write output CSV: {exc}")
         return False
 
-    print(f"[5/5] Saved cleaned CSV: {output_path}")
-    print(f"Summary: {original_rows} input rows -> {len(df)} output rows.")
-    print(f"Email addresses repaired using recognizable patterns: {repaired_email_count}.")
-    print(f"Rows marked '{REVIEW_LABEL}': {review_count}.")
-    print("Email syntax checks do not confirm that an address or mailbox exists.")
-    print("Note: zeros already missing from the source cannot be safely reconstructed.")
+    step(5, f"💾 Saved cleaned CSV: {output_path}", COLOR_GREEN)
+    print(f"📊 Summary: {original_rows} input rows -> {len(df)} output rows.")
+    print(f"🔧 Email addresses repaired using recognizable patterns: {repaired_email_count}.")
+    print(f"⚠️ Rows marked '{REVIEW_LABEL}': {review_count}.")
+    print("ℹ️ Email syntax checks do not confirm that an address or mailbox exists.")
+    print("📝 Note: zeros already missing from the source cannot be safely reconstructed.")
+    print()  # Leave a blank line before the PowerShell prompt.
     return True
 
 
@@ -226,4 +240,4 @@ if __name__ == "__main__":
     if os.path.exists(dirty_file):
         repair_csv(dirty_file, clean_file)
     else:
-        print(f"Input file not found: {dirty_file}. Run generate_dirty_csv.py first.")
+        print(f"❌ Input file not found: {dirty_file}. Run generate_dirty_csv.py first.")
