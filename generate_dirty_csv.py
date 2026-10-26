@@ -1,67 +1,68 @@
 import os
 import random
 
-# Создаем структуру папок для GitHub проекта
+# Create the folder structure for the GitHub project.
 os.makedirs("examples", exist_ok=True)
 
-# Исходные данные для генерации "каши"
+# Source data used to generate messy sample records.
 first_names = ["John", "Jane", "Alice", "Bob", "Michael", "Emma", "David", "Olivia", "James", "Sophia"]
 last_names = ["Doe", "Smith", "Johnson", "Brown", "Miller", "Davis", "Wilson", "Taylor", "Clark", "White"]
 companies = ["Alpha LLC", "Beta Corp", "Gamma Inc", "Delta Tech", "Omega Solutions"]
-# Города со спецсимволами для проверки кодировки (немецкие умлауты, французские акценты)
+
+# Cities with special characters for testing text encoding (German umlauts and French accents).
 cities = ["New York", "Los Angeles", "München", "Paris", "Montréal", "Tokyo", "Köln"]
 
-# Шапка таблицы. Ошибка 1: разделитель - точка с запятой (;) вместо запятой (,)
+# CSV header. Issue 1: uses semicolons (;) instead of commas (,) as delimiters.
 header = "First Name;Last Name;Email;Phone;ZIP Code;City;Company;Lead ID\n"
 rows = [header]
 
-# Генерируем 85 уникальных строк с ошибками
+# Generate 85 unique sample rows containing data issues.
 for i in range(1, 86):
     f_name = random.choice(first_names)
     l_name = random.choice(last_names)
 
-    # Ошибка 2: Лишние пробелы по краям (Trim Whitespaces)
+    # Issue 2: Add leading and trailing whitespace.
     if i % 5 == 0:
         f_name = f"  {f_name} "
 
-    # Ошибка 3: Битые и подозрительные Email-адреса для проверки очистки
+    # Issue 3: Create malformed and suspicious email addresses for testing the cleaner.
     base_email = f"{f_name.lower().strip()}.{l_name.lower()}{i}@example.com"
 
     if i % 10 == 0:
-        # Ошибка, которую можно распознать автоматически: @ заменен на at_
+        # Recognizable typo that can be repaired automatically: replace @ with at_.
         email = f"{f_name.lower()}.{l_name.lower()}{i}at_example.com"
     elif i % 17 == 0:
-        # Подозрительный адрес: два символа @
+        # Suspicious email: two @ characters.
         email = base_email.replace("@", "@@", 1)
     elif i % 19 == 0:
-        # Подозрительный адрес: в домене нет точки
+        # Suspicious email: the domain has no dot.
         email = f"{f_name.lower().strip()}.{l_name.lower()}{i}@example"
     elif i % 23 == 0:
-        # Подозрительный адрес: пробел внутри адреса
+        # Suspicious email: whitespace inside the address.
         email = f"{f_name.lower().strip()} {l_name.lower()}{i}@example.com"
     elif i % 29 == 0:
-        # Подозрительный адрес: отсутствует имя до @
-        email = f"@example.com"
+        # Suspicious email: the local part before @ is missing.
+        email = "@example.com"
     elif i % 31 == 0:
-        # Подозрительный адрес: две точки подряд в домене
+        # Suspicious email: two consecutive dots in the domain.
         email = f"{f_name.lower().strip()}.{l_name.lower()}{i}@example..com"
     else:
         email = base_email
 
-    # Ошибка 4: Сломанные телефоны (потеря ведущего нуля Excel-ем)
+    # Issue 4: Include phone numbers with inconsistent leading zeros.
     if i % 4 == 0:
-        phone = f"447911{random.randint(100000, 999999)}" # пропал 0 в начале (Великобритания)
+        phone = f"447911{random.randint(100000, 999999)}"  # UK-style number without a leading zero.
     elif i % 4 == 1:
-        phone = f"0151{random.randint(1000000, 9999999)}" # нормальный номер с нулем (Германия)
+        phone = f"0151{random.randint(1000000, 9999999)}"  # Number with a leading zero.
     else:
-        phone = f"1555{random.randint(1000000, 9999999)}" # США
+        phone = f"1555{random.randint(1000000, 9999999)}"  # US-style sample number.
 
-    # Ошибка 5: ZIP-коды и ID превратились во float (числа с .0 на конце)
+    # Issue 5: Make some ZIP codes and IDs look like floating-point values by adding .0.
     if i % 2 == 0:
         zip_code = f"{random.randint(10000, 99999)}.0"
         lead_id = f"{1000 + i}.0"
     else:
-        zip_code = f"0{random.randint(1000, 9999)}" # Потеря нуля: превратится в 4-значное вместо 5-значного
+        zip_code = f"0{random.randint(1000, 9999)}"  # A leading zero may be lost if treated as a number.
         lead_id = f"{1000 + i}"
 
     city = random.choice(cities)
@@ -70,19 +71,19 @@ for i in range(1, 86):
     row = f"{f_name};{l_name};{email};{phone};{zip_code};{city};{company};{lead_id}\n"
     rows.append(row)
 
-# Ошибка 6: Добавляем 15 полных дубликатов строк в случайные места таблицы
+# Issue 6: Insert 15 full duplicate rows at random positions in the file.
 for _ in range(15):
     duplicate_row = random.choice(rows[1:])
     rows.insert(random.randint(1, len(rows)), duplicate_row)
 
-# Ошибка 7: Сохраняем файл в кодировке Windows-1251 (CP1251) вместо UTF-8.
-# Это превратит некоторые символы в названиях городов в некорректный текст при неверном чтении.
+# Issue 7: Save the file using ISO-8859-1 (Latin-1) instead of UTF-8.
+# This helps test how the program handles text encoding and special characters.
 file_path = "examples/broken_leads_dirty.csv"
 with open(file_path, "w", encoding="ISO-8859-1") as f:
     f.writelines(rows)
 
-print(f"✅ Файл успешно сгенерирован и сохранен по пути: {file_path}")
-print(f"📊 Всего строк в файле (включая шапку и 15 дубликатов): {len(rows)}")
-print(f"📊 Всего уникальных строк (без дубликатов): {len(set(rows))}")
-print(f"📊 Всего дубликатов: {len(rows) - len(set(rows))}")
-print(f"📊 Всего уникальных строк (без дубликатов и полных дубликатов): {len(set(rows)) - 15}")
+print(f"✅ Sample file generated and saved to: {file_path}")
+print(f"📊 Total rows in the file (including the header and 15 duplicates): {len(rows)}")
+print(f"📊 Total unique rows (excluding duplicates): {len(set(rows))}")
+print(f"📊 Total duplicate rows: {len(rows) - len(set(rows))}")
+print(f"📊 Unique data rows after excluding the header and duplicate rows: {len(set(rows)) - 1}")
