@@ -1,34 +1,36 @@
 # CSV-Fixer: CSV Cleaning Tool
 
-CSV-Fixer is a small Python tool for cleaning and standardizing CSV files. It is intended for clearly defined, reviewable data-cleaning tasks.
+CSV-Fixer is a small Python project that cleans CSV files and makes common data-quality problems easier to spot. It is designed for simple, reviewable cleanup tasks rather than silently guessing how to fix uncertain data.
 
 ## Features
 
-- **Delimiter detection:** Tries to detect comma, semicolon, tab, or pipe delimiters. You can also pass a delimiter explicitly when calling `repair_csv`.
-- **Encoding detection:** Uses `chardet` to guess the input encoding and tries common fallbacks.
+- **Automatic encoding detection:** Uses `chardet` and tries common fallback encodings.
+- **Delimiter detection:** Detects common separators: comma, semicolon, tab, or pipe.
 - **Whitespace trimming:** Removes leading and trailing whitespace from cell values.
-- **Duplicate removal:** Removes rows that are identical after outer whitespace has been trimmed.
-- **Identifier-safe reading:** Reads values as text so Pandas does not automatically convert IDs, postal codes, or phone numbers to numbers and discard leading zeros that are present in the source.
-- **Basic identifier cleanup:** Removes a trailing `.0` from digit-only values in columns whose names indicate phone, ZIP/postal code, or ID fields.
-- **Email format review:** Performs a basic format check and reports suspicious email values. It preserves those values instead of guessing how to rewrite them.
-- **Standardized export:** Writes a comma-separated UTF-8 CSV without an extra DataFrame index column.
+- **Duplicate removal:** Removes fully duplicated rows after trimming whitespace.
+- **Identifier-safe reading:** Reads columns as text to avoid converting phone numbers, ZIP/postal codes, and IDs to numbers and losing zeros that are still present in the source.
+- **Basic identifier cleanup:** Removes a trailing `.0` from digit-only values in columns that look like phone, ZIP/postal-code, or ID fields.
+- **Email format checks:** Checks for common syntax problems, including missing parts, multiple `@` characters, whitespace, and malformed domains.
+- **Conservative email repair:** Repairs recognizable `at_`-instead-of-`@` typos. Uncertain or invalid values are not guessed at.
+- **Email review column:** Adds an `Email Review` column to the output when email columns are present. Blank, invalid, or unrepairable email values are marked `⚠️ NEEDS REVIEW`.
+- **Readable terminal progress:** Shows five numbered processing steps, colored status text, emoji indicators, and a summary of rows removed, emails repaired, and rows needing review.
+- **Spreadsheet-friendly output:** Writes a comma-separated CSV using UTF-8 with BOM (`utf-8-sig`) so spreadsheet programs can display special characters and emoji more reliably. It does not add a DataFrame index column.
 
-## Important limitations
+## How the email review works
 
-- CSV-Fixer cannot reliably reconstruct a leading zero that is already missing from the source. Provide the correct source data or a known field length if such repair is needed.
-- Encoding detection is a best-effort guess; ambiguous files may need manual review.
-- Delimiter detection is a heuristic and can be uncertain for unusual files.
-- Email checks only flag suspicious syntax. They do not verify whether an email address exists or can receive messages.
-- The tool does not currently restore mojibake (text that was already decoded with the wrong encoding) in every case.
-- Always review the output before using it for business-critical records.
+CSV-Fixer only applies a repair when it recognizes a specific pattern and the result passes its syntax checks. For example, an address containing `at_` in place of `@` may be repaired.
+
+Addresses that are blank, malformed, or cannot be repaired confidently are marked `⚠️ NEEDS REVIEW` in the added review column. Review the flagged rows manually before using the data.
+
+**Important:** A syntactically valid email address is not proof that the address exists or that its mailbox can receive messages.
 
 ## Requirements
 
-- Python 3.10 or newer is recommended.
-- pandas
-- chardet
+- Python 3.10 or newer recommended
+- `pandas`
+- `chardet`
 
-Install dependencies:
+Install the dependencies:
 
 ```bash
 python -m pip install pandas chardet
@@ -36,23 +38,43 @@ python -m pip install pandas chardet
 
 ## Run the example
 
-From the repository folder, generate the sample input:
+Run these commands from the repository folder.
 
-```bash
-python generate_dirty_csv.py
-```
+1. Generate a sample CSV containing deliberately messy data:
 
-Then run CSV-Fixer:
+   ```bash
+   python generate_dirty_csv.py
+   ```
 
-```bash
-python main.py
-```
+2. Clean the generated CSV:
 
-The input sample is read from `examples/broken_leads_dirty.csv`. The cleaned output is written to `examples/fixed_leads_clean.csv`.
+   ```bash
+   python main.py
+   ```
 
-## Use it on another file
+By default, the example uses:
 
-Edit the input and output paths in the `if __name__ == "__main__"` section of `main.py`, or import and call the function:
+- **Input:** `examples/broken_leads_dirty.csv`
+- **Output:** `examples/fixed_leads_clean.csv`
+
+The sample generator includes issues such as:
+
+- Extra whitespace around values
+- Duplicate rows
+- Email typos where `@` is replaced with `at_`
+- Emails with multiple `@` characters
+- Missing dots in email domains
+- Whitespace inside email addresses
+- Missing email local parts
+- Consecutive dots in email domains
+- Phone, ZIP/postal-code, and ID values with trailing `.0` or potentially missing leading zeros
+- Non-ASCII characters in city names to exercise encoding handling
+
+The input generator uses random sample data, so exact row counts and repair totals can vary between runs.
+
+## Use it on another CSV file
+
+You can edit the input and output paths in the `if __name__ == "__main__"` section of `main.py`, or import the cleaning function:
 
 ```python
 from main import repair_csv
@@ -60,12 +82,21 @@ from main import repair_csv
 repair_csv("input.csv", "output.csv")
 ```
 
-To specify a delimiter explicitly:
+To specify a delimiter manually:
 
 ```python
 repair_csv("input.csv", "output.csv", current_delimiter=";")
 ```
 
+## Important limitations
+
+- **Missing leading zeros cannot be safely reconstructed from the value alone.** CSV-Fixer preserves zeros that are still present in source values, but it cannot know how many zeros were lost unless you provide a trusted rule or expected field length.
+- Encoding detection and delimiter detection are best-effort heuristics. Inspect the output if the source file is unusual.
+- Email checks validate syntax only; they do not contact mail servers or confirm mailbox existence.
+- Email repairs are intentionally conservative. Values that cannot be repaired with confidence are flagged for review instead of being guessed.
+- The tool does not restore every case of text that was already corrupted by decoding with the wrong encoding.
+- Always review the output before using it for business-critical records.
+
 ## Project purpose
 
-CSV-Fixer is a personal project and a starting point for simple CSV cleaning tasks. Check the input and output carefully, especially when handling identifiers, contact details, or other important data.
+CSV-Fixer is a personal Python portfolio project demonstrating CSV parsing, data cleaning, basic validation, conservative error correction, and clear reporting of records that need human review.
