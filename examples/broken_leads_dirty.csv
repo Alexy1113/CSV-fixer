@@ -1,0 +1,101 @@
+First Name;Last Name;Email;Phone;ZIP Code;City;Company;Lead ID
+James;White;james.white1@example.com;01515021755;04458;Montréal;Omega Solutions;1001
+Michael;Miller;michael.miller2@example.com;15552236523;96029.0;Tokyo;Alpha LLC;1002.0
+David;White;david.white3@example.com;15555907133;06326;Montréal;Gamma Inc;1003
+David;White;david.white4@example.com;447911248945;97311.0;Köln;Alpha LLC;1004.0
+  James ;Wilson;james.wilson5@example.com;01517558666;04514;Tokyo;Gamma Inc;1005
+Alice;Johnson;alice.johnson6@example.com;15552922782;30114.0;New York;Alpha LLC;1006.0
+John;Wilson;john.wilson7@example.com;15555521614;05881;Montréal;Beta Corp;1007
+Jane;White;jane.white8@example.com;447911573532;35442.0;Paris;Alpha LLC;1008.0
+Michael;White;michael.white9@example.com;01512917934;06412;München;Beta Corp;1009
+  David ;Smith;  david .smith10at_example.com;15556022259;38245.0;München;Beta Corp;1010.0
+John;Davis;john.davis11@example.com;15555694576;07048;New York;Gamma Inc;1011
+David;Doe;david.doe12@example.com;447911769246;44412.0;Köln;Beta Corp;1012.0
+Bob;Taylor;bob.taylor13@example.com;01513085833;04360;München;Beta Corp;1013
+David;Johnson;david.johnson14@example.com;15551318251;67613.0;Los Angeles;Delta Tech;1014.0
+  Jane ;Miller;jane.miller15@example.com;15555597021;08612;Köln;Delta Tech;1015
+Sophia;Clark;sophia.clark68@example.com;447911336465;73679.0;Paris;Beta Corp;1068.0
+John;Miller;john.miller16@example.com;447911491876;74903.0;Tokyo;Alpha LLC;1016.0
+Olivia;Miller;olivia.miller17@example.com;01517137871;07816;Montréal;Omega Solutions;1017
+Michael;Taylor;michael.taylor18@example.com;15552207950;99886.0;Tokyo;Alpha LLC;1018.0
+Michael;Davis;michael.davis33@example.com;01512764380;07753;Köln;Delta Tech;1033
+James;White;james.white1@example.com;01515021755;04458;Montréal;Omega Solutions;1001
+Bob;Davis;bob.davis42@example.com;15556800385;86072.0;Paris;Omega Solutions;1042.0
+James;Clark;james.clark19@example.com;15556393506;07837;Paris;Gamma Inc;1019
+David;White;david.white67@example.com;15551481829;03743;Montréal;Omega Solutions;1067
+  Michael ;Johnson;  michael .johnson20at_example.com;447911350562;52542.0;Los Angeles;Omega Solutions;1020.0
+John;Brown;john.brown21@example.com;01519428670;05753;New York;Omega Solutions;1021
+James;Miller;james.miller22@example.com;15557420271;91210.0;Paris;Alpha LLC;1022.0
+Sophia;Davis;sophia.davis23@example.com;15554093324;05861;Köln;Alpha LLC;1023
+John;Johnson;john.johnson24@example.com;447911304258;99681.0;Montréal;Omega Solutions;1024.0
+  Sophia ;Doe;sophia.doe25@example.com;01512076548;04296;Köln;Alpha LLC;1025
+John;Brown;john.brown26@example.com;15559078218;12115.0;Köln;Gamma Inc;1026.0
+Sophia;Brown;sophia.brown27@example.com;15558563583;04806;Montréal;Delta Tech;1027
+Jane;Smith;jane.smith28@example.com;447911813170;45776.0;Paris;Beta Corp;1028.0
+Alice;Taylor;alice.taylor29@example.com;01514635939;07186;Tokyo;Omega Solutions;1029
+  Jane ;White;  jane .white30at_example.com;15551191639;47461.0;München;Beta Corp;1030.0
+Alice;White;alice.white31@example.com;15559571432;07472;Tokyo;Beta Corp;1031
+James;Davis;james.davis32@example.com;447911404604;48664.0;Los Angeles;Alpha LLC;1032.0
+Michael;Davis;michael.davis33@example.com;01512764380;07753;Köln;Delta Tech;1033
+James;White;james.white34@example.com;15557162978;68401.0;Tokyo;Beta Corp;1034.0
+Michael;Johnson;michael.johnson54@example.com;15559330883;31874.0;Tokyo;Alpha LLC;1054.0
+  Michael ;Taylor;michael.taylor35@example.com;15559538740;05374;Paris;Delta Tech;1035
+Bob;Taylor;bob.taylor36@example.com;447911738133;72385.0;Köln;Omega Solutions;1036.0
+Jane;White;jane.white8@example.com;447911573532;35442.0;Paris;Alpha LLC;1008.0
+John;Johnson;john.johnson37@example.com;01512400675;05967;Los Angeles;Delta Tech;1037
+John;Davis;john.davis38@example.com;15552776428;65676.0;München;Beta Corp;1038.0
+Alice;Taylor;alice.taylor39@example.com;15557765742;07999;Tokyo;Alpha LLC;1039
+  Olivia ;Johnson;  olivia .johnson40at_example.com;447911660767;96154.0;Los Angeles;Omega Solutions;1040.0
+John;Smith;john.smith41@example.com;01517807185;05059;Los Angeles;Beta Corp;1041
+Bob;Davis;bob.davis42@example.com;15556800385;86072.0;Paris;Omega Solutions;1042.0
+James;Brown;james.brown43@example.com;15551524175;01593;Tokyo;Alpha LLC;1043
+Alice;White;alice.white44@example.com;447911304872;15167.0;Los Angeles;Beta Corp;1044.0
+  Bob ;Wilson;bob.wilson45@example.com;01516613023;08110;München;Beta Corp;1045
+David;White;david.white3@example.com;15555907133;06326;Montréal;Gamma Inc;1003
+Emma;White;emma.white46@example.com;15558234070;16217.0;Tokyo;Gamma Inc;1046.0
+Michael;Miller;michael.miller47@example.com;15556674953;09078;Tokyo;Beta Corp;1047
+Olivia;Smith;olivia.smith48@example.com;447911749905;43142.0;Paris;Beta Corp;1048.0
+James;Doe;james.doe53@example.com;01513825358;03034;München;Gamma Inc;1053
+Michael;Taylor;michael.taylor18@example.com;15552207950;99886.0;Tokyo;Alpha LLC;1018.0
+Jane;Clark;jane.clark49@example.com;01516089824;01570;Paris;Alpha LLC;1049
+  Sophia ;Davis;  sophia .davis50at_example.com;15556117108;85948.0;München;Beta Corp;1050.0
+James;Doe;james.doe51@example.com;15555488271;09926;Montréal;Omega Solutions;1051
+James;Clark;james.clark52@example.com;447911658556;79109.0;Montréal;Gamma Inc;1052.0
+James;Doe;james.doe53@example.com;01513825358;03034;München;Gamma Inc;1053
+Michael;Johnson;michael.johnson54@example.com;15559330883;31874.0;Tokyo;Alpha LLC;1054.0
+  Emma ;White;emma.white55@example.com;15555478778;02121;New York;Gamma Inc;1055
+Alice;Smith;alice.smith56@example.com;447911838548;82135.0;Tokyo;Beta Corp;1056.0
+Michael;Brown;michael.brown57@example.com;01519869415;04150;München;Omega Solutions;1057
+Jane;Doe;jane.doe58@example.com;15554478975;54537.0;Paris;Delta Tech;1058.0
+John;Davis;john.davis59@example.com;15552977407;07964;Tokyo;Omega Solutions;1059
+  John ;Davis;  john .davis60at_example.com;447911758576;77053.0;Montréal;Beta Corp;1060.0
+Sophia;White;sophia.white61@example.com;01514884974;01542;Paris;Gamma Inc;1061
+Bob;Johnson;bob.johnson62@example.com;15556839656;90707.0;Paris;Beta Corp;1062.0
+James;Johnson;james.johnson63@example.com;15558137816;04317;Paris;Gamma Inc;1063
+John;Miller;john.miller64@example.com;447911977546;93868.0;Montréal;Delta Tech;1064.0
+  Olivia ;Doe;olivia.doe65@example.com;01515591429;05303;München;Omega Solutions;1065
+James;White;james.white66@example.com;15553450824;85486.0;New York;Alpha LLC;1066.0
+David;White;david.white67@example.com;15551481829;03743;Montréal;Omega Solutions;1067
+James;Clark;james.clark19@example.com;15556393506;07837;Paris;Gamma Inc;1019
+  John ;Davis;  john .davis60at_example.com;447911758576;77053.0;Montréal;Beta Corp;1060.0
+Sophia;Clark;sophia.clark68@example.com;447911336465;73679.0;Paris;Beta Corp;1068.0
+Michael;Clark;michael.clark69@example.com;01512897572;03762;Tokyo;Delta Tech;1069
+  John ;Clark;  john .clark70at_example.com;15551749808;17912.0;Tokyo;Delta Tech;1070.0
+Michael;Brown;michael.brown71@example.com;15557845537;04668;New York;Beta Corp;1071
+Jane;Wilson;jane.wilson79@example.com;15554396340;05560;New York;Gamma Inc;1079
+Bob;Johnson;bob.johnson72@example.com;447911798239;90345.0;New York;Gamma Inc;1072.0
+David;Brown;david.brown73@example.com;01515891594;04146;München;Omega Solutions;1073
+David;Brown;david.brown73@example.com;01515891594;04146;München;Omega Solutions;1073
+Jane;Clark;jane.clark74@example.com;15554459016;76283.0;Los Angeles;Beta Corp;1074.0
+  Alice ;Doe;alice.doe75@example.com;15556336725;02746;Köln;Omega Solutions;1075
+Sophia;Brown;sophia.brown76@example.com;447911585610;88399.0;München;Beta Corp;1076.0
+David;Wilson;david.wilson77@example.com;01518456229;08494;Montréal;Gamma Inc;1077
+Alice;Johnson;alice.johnson78@example.com;15557912727;91994.0;München;Delta Tech;1078.0
+Jane;Wilson;jane.wilson79@example.com;15554396340;05560;New York;Gamma Inc;1079
+  Sophia ;Wilson;  sophia .wilson80at_example.com;447911710792;84277.0;New York;Delta Tech;1080.0
+Bob;Brown;bob.brown81@example.com;01517344276;01247;München;Delta Tech;1081
+James;White;james.white82@example.com;15553426860;14671.0;Köln;Gamma Inc;1082.0
+  Sophia ;Davis;  sophia .davis50at_example.com;15556117108;85948.0;München;Beta Corp;1050.0
+Bob;Taylor;bob.taylor83@example.com;15559787494;06491;Paris;Alpha LLC;1083
+Sophia;Wilson;sophia.wilson84@example.com;447911891905;39959.0;Los Angeles;Delta Tech;1084.0
+  David ;Miller;david.miller85@example.com;01517828164;06342;Köln;Alpha LLC;1085
