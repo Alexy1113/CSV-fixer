@@ -6,7 +6,7 @@ import chardet
 import pandas as pd
 
 DELIMITER_CANDIDATES = [",", ";", "\t", "|"]
-REVIEW_LABEL = "{COLOR_RED}⚠️  NEEDS REVIEW{COLOR_RESET}"
+REVIEW_LABEL = "⚠️  NEEDS REVIEW"
 
 # ANSI colors work in modern Windows Terminal and PowerShell.
 COLOR_GREEN = "\033[92m"
@@ -133,7 +133,9 @@ def suggest_email_repair(value):
 
 def repair_csv(input_path, output_path, current_delimiter=None):
     # Clean a CSV and mark suspicious email rows in an added review column.
-    print(f"\n{COLOR_RED}🚀 Launching data cleaning pipeline for: {input_path}{COLOR_RESET}")
+    print(
+        f"\n{COLOR_RED}🚀 Launching data cleaning pipeline for: {input_path}{COLOR_RESET}"
+    )
 
     encoding = detect_encoding(input_path)
     step(1, f"🔎 Detected encoding: {encoding}", COLOR_GREEN)
@@ -155,7 +157,9 @@ def repair_csv(input_path, output_path, current_delimiter=None):
         print(f"❌ Failed to read CSV: {exc}")
         return False
 
-    print(f"{COLOR_YELLOW}📄 File parsed successfully into {len(df.columns)} columns.{COLOR_RESET}")
+    print(
+        f"{COLOR_YELLOW}📄 File parsed successfully into {len(df.columns)} columns.{COLOR_RESET}"
+    )
     original_rows = len(df)
 
     for col in df.columns:
