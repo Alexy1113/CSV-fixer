@@ -1,48 +1,71 @@
-# CSV Data Repair & Cleaning Automation Tool 🛠️
+# CSV-Fixer: CSV Cleaning Tool
 
-A professional Python-based data cleaning and optimization wizard. This automation tool is specifically engineered to repair corrupted or poorly formatted CSV exports from CRMs (HubSpot, Salesforce), lead scrapers, and e-commerce platforms (Shopify, WooCommerce) before database import.
+CSV-Fixer is a small Python tool for cleaning and standardizing CSV files. It is intended for clearly defined, reviewable data-cleaning tasks.
 
-## 🚀 Key Features (What it Fixes)
-- **Advanced Delimiter Parsing:** Automatically handles custom or broken delimiters (such as semicolons `;` or tabs) and splits unified text rows into beautifully structured individual columns.
-- **Automated Encoding Resolution:** Instantly fixes character corruption and garbage text ("krkozyabry" like `MÃ¼nchen` instead of `München`) by auto-detecting original encodings using `chardet`.
-- **Pro-Level Duplication Elimination:** Instantly drops duplicate rows to ensure clean, high-quality database entries.
-- **Smart Phone & ZIP Code Formatting:** Prevents spreadsheet engines from dropping leading zeros (e.g., maintaining `01234` instead of converting to `1234`) and strips unwanted `.0` float artifacts from structural numbers.
-- **Ultimate Email Scrubbing & Regex Validation:** 
-  - Erases accidental spaces inside email strings (e.g., `david .smith` -> `david.smith`).
-  - Converts plaintext text artifacts like `[at]` or `at` into genuine `@` symbols.
-  - Automatically strips forbidden trailing or leading special characters immediately following the `@` sign (e.g., `@_example.com` -> `@example.com`).
+## Features
 
-## 📦 Tech Stack
-- **Python 3.15**
-- **Pandas** (Modern Copy-on-Write pipeline setup without deprecated `inplace` parameters)
-- **Chardet** (Universal character encoding detection)
-- **Re** (Built-in regular expressions engine)
+- **Delimiter detection:** Tries to detect comma, semicolon, tab, or pipe delimiters. You can also pass a delimiter explicitly when calling `repair_csv`.
+- **Encoding detection:** Uses `chardet` to guess the input encoding and tries common fallbacks.
+- **Whitespace trimming:** Removes leading and trailing whitespace from cell values.
+- **Duplicate removal:** Removes rows that are identical after outer whitespace has been trimmed.
+- **Identifier-safe reading:** Reads values as text so Pandas does not automatically convert IDs, postal codes, or phone numbers to numbers and discard leading zeros that are present in the source.
+- **Basic identifier cleanup:** Removes a trailing `.0` from digit-only values in columns whose names indicate phone, ZIP/postal code, or ID fields.
+- **Email format review:** Performs a basic format check and reports suspicious email values. It preserves those values instead of guessing how to rewrite them.
+- **Standardized export:** Writes a comma-separated UTF-8 CSV without an extra DataFrame index column.
 
-## 💻 How to Run Locally
+## Important limitations
 
-1. Clone this repository to your local machine:
+- CSV-Fixer cannot reliably reconstruct a leading zero that is already missing from the source. Provide the correct source data or a known field length if such repair is needed.
+- Encoding detection is a best-effort guess; ambiguous files may need manual review.
+- Delimiter detection is a heuristic and can be uncertain for unusual files.
+- Email checks only flag suspicious syntax. They do not verify whether an email address exists or can receive messages.
+- The tool does not currently restore mojibake (text that was already decoded with the wrong encoding) in every case.
+- Always review the output before using it for business-critical records.
+
+## Requirements
+
+- Python 3.10 or newer is recommended.
+- pandas
+- chardet
+
+Install dependencies:
+
 ```bash
-git clone https://github.com
-cd CSV-Python
+python -m pip install pandas chardet
 ```
 
-2. Install the production-ready dependencies:
-```bash
-pip install pandas chardet
-```
+## Run the example
 
-3. Generate a massive 100-row "dirty" synthetic dataset full of structural errors to test the tool:
+From the repository folder, generate the sample input:
+
 ```bash
 python generate_dirty_csv.py
 ```
 
-4. Run the master data-cleaning script to produce a pristine, production-ready CSV output:
+Then run CSV-Fixer:
+
 ```bash
 python main.py
 ```
 
-## 💼 Fiverr Services Powered by This Script
-I leverage this exact automated system to provide lightning-fast, highly accurate turnarounds on Fiverr for:
-- B2B Lead List validation, scrubbing, and data deduplication.
-- E-commerce inventory list standardizations (Shopify, Amazon, and WooCommerce mapping).
-- Complex text-to-columns conversion tasks and character encoding recoveries.
+The input sample is read from `examples/broken_leads_dirty.csv`. The cleaned output is written to `examples/fixed_leads_clean.csv`.
+
+## Use it on another file
+
+Edit the input and output paths in the `if __name__ == "__main__"` section of `main.py`, or import and call the function:
+
+```python
+from main import repair_csv
+
+repair_csv("input.csv", "output.csv")
+```
+
+To specify a delimiter explicitly:
+
+```python
+repair_csv("input.csv", "output.csv", current_delimiter=";")
+```
+
+## Project purpose
+
+CSV-Fixer is a personal project and a starting point for simple CSV cleaning tasks. Check the input and output carefully, especially when handling identifiers, contact details, or other important data.
