@@ -5,26 +5,23 @@ import re
 import chardet
 import pandas as pd
 
-
 DELIMITER_CANDIDATES = [",", ";", "\t", "|"]
-REVIEW_LABEL = "⚠️ NEEDS REVIEW"
+REVIEW_LABEL = "{COLOR_RED}⚠️  NEEDS REVIEW{COLOR_RESET}"
 
 # ANSI colors work in modern Windows Terminal and PowerShell.
-COLOR_CYAN = "\033[96m"
 COLOR_GREEN = "\033[92m"
-COLOR_YELLOW = "\033[93m"
 COLOR_RED = "\033[91m"
-COLOR_MAGENTA = "\033[95m"
+COLOR_YELLOW = "\033[93m"
 COLOR_RESET = "\033[0m"
 
 
-def step(number, message, color=COLOR_CYAN):
-    """Print a colored step number and a readable status message."""
+def step(number, message, color=COLOR_GREEN):
+    # Print a colored step number and a readable status message.
     print(f"{color}[{number}/5]{COLOR_RESET} {message}")
 
 
 def detect_encoding(file_path):
-    """Detect a likely text encoding, with safe fallbacks."""
+    # Detect a likely text encoding, with safe fallbacks.
     with open(file_path, "rb") as f:
         raw_data = f.read(100_000)
 
@@ -44,7 +41,7 @@ def detect_encoding(file_path):
 
 
 def detect_delimiter(file_path, encoding):
-    """Guess the delimiter from a sample, with a conservative fallback."""
+    # Guess the delimiter from a sample, with a conservative fallback.
     with open(file_path, "r", encoding=encoding, errors="replace", newline="") as f:
         sample = f.read(50_000)
 
@@ -52,15 +49,21 @@ def detect_delimiter(file_path, encoding):
         return ","
 
     try:
-        return csv.Sniffer().sniff(sample, delimiters="".join(DELIMITER_CANDIDATES)).delimiter
+        return (
+            csv.Sniffer()
+            .sniff(sample, delimiters="".join(DELIMITER_CANDIDATES))
+            .delimiter
+        )
     except csv.Error:
         first_line = next((line for line in sample.splitlines() if line.strip()), "")
-        counts = {delimiter: first_line.count(delimiter) for delimiter in DELIMITER_CANDIDATES}
+        counts = {
+            delimiter: first_line.count(delimiter) for delimiter in DELIMITER_CANDIDATES
+        }
         return max(counts, key=counts.get) if max(counts.values(), default=0) else ","
 
 
 def clean_phone_and_zip(value):
-    """Trim a value and remove a trailing .0 artifact without numeric conversion."""
+    # Trim a value and remove a trailing .0 artifact without numeric conversion
     if value is None or pd.isna(value):
         return ""
 
@@ -71,7 +74,7 @@ def clean_phone_and_zip(value):
 
 
 def is_email_format_valid(value):
-    """Check common email syntax problems; this does not verify mailbox existence."""
+    # Check common email syntax problems; this does not verify mailbox existence
     if not value:
         return False
 
@@ -108,7 +111,7 @@ def is_email_format_valid(value):
 
 
 def suggest_email_repair(value):
-    """Repair only recognizable typos; return None when the fix is uncertain."""
+    # Repair only recognizable typos; return None when the fix is uncertain.
     original = str(value).strip()
     if not original or is_email_format_valid(original):
         return original
@@ -129,14 +132,14 @@ def suggest_email_repair(value):
 
 
 def repair_csv(input_path, output_path, current_delimiter=None):
-    """Clean a CSV and mark suspicious email rows in an added review column."""
-    print(f"\n🚀 Launching data cleaning pipeline for: {input_path}")
+    # Clean a CSV and mark suspicious email rows in an added review column.
+    print(f"\n{COLOR_RED}🚀 Launching data cleaning pipeline for: {input_path}{COLOR_RESET}")
 
     encoding = detect_encoding(input_path)
-    step(1, f"🔎 Detected encoding: {encoding}", COLOR_CYAN)
+    step(1, f"🔎 Detected encoding: {encoding}", COLOR_GREEN)
 
     delimiter = current_delimiter or detect_delimiter(input_path, encoding)
-    step(2, f"🧩 Using delimiter: {repr(delimiter)}", COLOR_CYAN)
+    step(2, f"🧩 Using delimiter: {repr(delimiter)}", COLOR_GREEN)
 
     try:
         df = pd.read_csv(
@@ -152,20 +155,27 @@ def repair_csv(input_path, output_path, current_delimiter=None):
         print(f"❌ Failed to read CSV: {exc}")
         return False
 
-    print(f"📄 File parsed successfully into {len(df.columns)} columns.")
+    print(f"{COLOR_YELLOW}📄 File parsed successfully into {len(df.columns)} columns.{COLOR_RESET}")
     original_rows = len(df)
 
     for col in df.columns:
-        df[col] = df[col].map(lambda value: value.strip() if isinstance(value, str) else value)
+        df[col] = df[col].map(
+            lambda value: value.strip() if isinstance(value, str) else value
+        )
 
     df = df.drop_duplicates()
-    step(3, f"🧹 Removed {original_rows - len(df)} duplicate rows.", COLOR_YELLOW)
+    step(3, f"🧹 Removed {original_rows - len(df)} duplicate rows.", COLOR_GREEN)
 
-    step(4, "🛠️ Cleaning identifier-like columns and checking email format.", COLOR_MAGENTA)
+    step(
+        4,
+        "🛠️  Cleaning identifier-like columns and checking email format.",
+        COLOR_GREEN,
+    )
     repaired_email_count = 0
     review_count = 0
     email_columns = [
-        col for col in df.columns
+        col
+        for col in df.columns
         if "email" in str(col).strip().lower()
         or str(col).strip().lower() in {"e-mail", "mail"}
     ]
@@ -173,7 +183,10 @@ def repair_csv(input_path, output_path, current_delimiter=None):
     for col in df.columns:
         col_lower = str(col).strip().lower()
 
-        if any(word in col_lower for word in ("phone", "zip", "postal", "post code", "postcode")) or re.search(r"\bid\b", col_lower):
+        if any(
+            word in col_lower
+            for word in ("phone", "zip", "postal", "post code", "postcode")
+        ) or re.search(r"\bid\b", col_lower):
             df[col] = df[col].map(clean_phone_and_zip)
 
     if email_columns:
@@ -225,10 +238,14 @@ def repair_csv(input_path, output_path, current_delimiter=None):
 
     step(5, f"💾 Saved cleaned CSV: {output_path}", COLOR_GREEN)
     print(f"📊 Summary: {original_rows} input rows -> {len(df)} output rows.")
-    print(f"🔧 Email addresses repaired using recognizable patterns: {repaired_email_count}.")
-    print(f"⚠️ Rows marked '{REVIEW_LABEL}': {review_count}.")
-    print("ℹ️ Email syntax checks do not confirm that an address or mailbox exists.")
-    print("📝 Note: zeros already missing from the source cannot be safely reconstructed.")
+    print(
+        f"🔧 Email addresses repaired using recognizable patterns: {repaired_email_count}."
+    )
+    print(f"⚠️  Rows marked '{REVIEW_LABEL}': {review_count}.")
+    print("ℹ️  Email syntax checks do not confirm that an address or mailbox exists.")
+    print(
+        "📝 Note: zeros already missing from the source cannot be safely reconstructed."
+    )
     print()  # Leave a blank line before the PowerShell prompt.
     return True
 
@@ -240,4 +257,6 @@ if __name__ == "__main__":
     if os.path.exists(dirty_file):
         repair_csv(dirty_file, clean_file)
     else:
-        print(f"❌ Input file not found: {dirty_file}. Run generate_dirty_csv.py first.")
+        print(
+            f"❌ | Input file not found: {dirty_file}. Run generate_dirty_csv.py first."
+        )
